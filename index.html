@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teacher AI Rwanda 2026</title>
+
+<style>
+/* ===== 2026 Rwanda Modern Theme ===== */
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(-45deg, #00A1DE, #1EB53A, #FCD116, #0072CE);
+    background-size: 400% 400%;
+    animation: gradientMove 12s ease infinite;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: white;
+}
+
+@keyframes gradientMove {
+    0% {background-position: 0% 50%;}
+    50% {background-position: 100% 50%;}
+    100% {background-position: 0% 50%;}
+}
+
+.container {
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(15px);
+    width: 95%;
+    max-width: 700px;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.sub {
+    text-align: center;
+    font-size: 14px;
+    opacity: 0.8;
+    margin-bottom: 20px;
+}
+
+.chat-box {
+    height: 350px;
+    overflow-y: auto;
+    padding: 15px;
+    border-radius: 15px;
+    background: rgba(255,255,255,0.08);
+    margin-bottom: 15px;
+}
+
+.message {
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.user {
+    text-align: right;
+    color: #FCD116;
+}
+
+.ai {
+    text-align: left;
+    color: #1EB53A;
+}
+
+.input-area {
+    display: flex;
+    gap: 10px;
+}
+
+input {
+    flex: 1;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    font-size: 15px;
+}
+
+button {
+    padding: 12px 18px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    background: #FCD116;
+    color: #000;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #ffd84d;
+}
+
+.thinking {
+    font-style: italic;
+    opacity: 0.7;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Teacher AI 🇷🇼</h1>
+    <div class="sub">Smart Learning Assistant • Rwanda 2026 Edition</div>
+
+    <div class="chat-box" id="chatBox"></div>
+
+    <div class="input-area">
+        <input type="text" id="userInput" placeholder="Ask your question..." />
+        <button onclick="sendMessage()">Ask</button>
+    </div>
+</div>
+
+<script>
+const chatBox = document.getElementById("chatBox");
+
+function sendMessage() {
+    const input = document.getElementById("userInput");
+    const text = input.value.trim();
+    if (!text) return;
+
+    addMessage("user", text);
+    input.value = "";
+
+    addThinking();
+
+    setTimeout(() => {
+        removeThinking();
+        const response = thinkAndRespond(text);
+        typeMessage("ai", response);
+    }, 1500);
+}
+
+function addMessage(role, text) {
+    const msg = document.createElement("div");
+    msg.className = "message " + role;
+    msg.innerHTML = text;
+    chatBox.appendChild(msg);
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+function addThinking() {
+    const thinking = document.createElement("div");
+    thinking.className = "message ai thinking";
+    thinking.id = "thinking";
+    thinking.innerHTML = "Teacher AI is thinking...";
+    chatBox.appendChild(thinking);
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+function removeThinking() {
+    const thinking = document.getElementById("thinking");
+    if (thinking) thinking.remove();
+}
+
+function typeMessage(role, text) {
+    const msg = document.createElement("div");
+    msg.className = "message " + role;
+    chatBox.appendChild(msg);
+
+    let i = 0;
+    function typing() {
+        if (i < text.length) {
+            msg.innerHTML += text.charAt(i);
+            i++;
+            setTimeout(typing, 20);
+        }
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+    typing();
+}
+
+/* ===== Simple AI Logic (Simulated Thinking) ===== */
+
+function thinkAndRespond(input) {
+    input = input.toLowerCase();
+
+    if (input.includes("hello") || input.includes("hi")) {
+        return "Hello dear student! 😊 How can I help you learn today?";
+    }
+
+    if (input.includes("math")) {
+        return "Mathematics helps us develop logical thinking. Tell me your math problem and I will guide you step by step.";
+    }
+
+    if (input.includes("english")) {
+        return "English improves communication skills. Do you want grammar help, vocabulary, or writing practice?";
+    }
+
+    if (input.includes("kinyarwanda")) {
+        return "Mu Kinyarwanda, ndagufasha neza cyane. Mbwira ikibazo cyawe cyangwa isomo ushaka gusobanukirwa.";
+    }
+
+    if (input.includes("rwanda")) {
+        return "Rwanda is known as the Land of a Thousand Hills. Its capital city is Kigali, and it is one of the fastest growing economies in Africa.";
+    }
+
+    if (input.includes("exam")) {
+        return "To prepare for exams, review your notes daily, practice past papers, and ask questions when something is not clear.";
+    }
+
+    if (input.includes("science")) {
+        return "Science helps us understand how the world works. Which topic in science do you want to explore?";
+    }
+
+    return "That is an interesting question. Let me explain it step by step to make it simple and clear for you. Could you give me a little more detail?";
+}
+</script>
+
+</body>
+</html>
