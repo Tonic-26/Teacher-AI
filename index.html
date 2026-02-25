@@ -1,563 +1,907 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Teacher AI Rwanda 2026 – Smart Learning</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher AI Rwanda 2026 – Smart Learning Platform</title>
+    <style>
+        :root {
+            --primary-blue: #0057B8;
+            --primary-green: #00A651;
+            --sunrise-yellow: #FFD700;
+            --deep-navy: #0A1628;
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.18);
+            --text-primary: #1a1a2e;
+            --text-secondary: #4a4a6a;
+            --bg-primary: #f0f4f8;
+            --bg-secondary: #e8ecf1;
+            --shadow: rgba(0, 87, 184, 0.15);
+            --accent-glow: rgba(0, 87, 184, 0.3);
+        }
 
-    body {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
-      background: linear-gradient(145deg, #0b1f2e 0%, #1d4a3e 45%, #f5b342 100%);
-      background-size: 200% 200%;
-      animation: floatGradient 14s ease infinite;
-      transition: background 0.4s, color 0.3s;
-    }
+        [data-theme="dark"] {
+            --text-primary: #f0f4f8;
+            --text-secondary: #a0aec0;
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #121a2d;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --shadow: rgba(0, 0, 0, 0.4);
+            --accent-glow: rgba(0, 166, 81, 0.3);
+        }
 
-    /* light theme overrides */
-    body.light {
-      background: linear-gradient(145deg, #d4eaf0 0%, #b8d9c6 45%, #fdebbc 100%);
-      background-size: 200% 200%;
-      animation: floatGradient 14s ease infinite;
-    }
-    body.light .glass-card {
-      background: rgba(245, 245, 250, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.7);
-      box-shadow: 0 20px 40px -12px rgba(5, 55, 40, 0.25);
-    }
-    body.light .user-message {
-      background: rgba(25, 85, 70, 0.15);
-      color: #052e25;
-    }
-    body.light .ai-message {
-      background: rgba(245, 180, 60, 0.2);
-      color: #1e3b2f;
-    }
-    body.light select, body.light textarea, body.light button {
-      background: rgba(255,255,240,0.7);
-      color: #0b2f25;
-      border-color: #c0b28a;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    @keyframes floatGradient {
-      0% { background-position: 0% 0%; }
-      50% { background-position: 100% 100%; }
-      100% { background-position: 0% 0%; }
-    }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
 
-    /* glassmorphism core */
-    .glass-card {
-      background: rgba(10, 30, 30, 0.4);
-      backdrop-filter: blur(14px) saturate(180%);
-      -webkit-backdrop-filter: blur(14px) saturate(180%);
-      border: 1px solid rgba(255, 220, 150, 0.25);
-      border-radius: 2.5rem 2.5rem 2.5rem 2.5rem;
-      box-shadow: 0 30px 50px -20px rgba(0, 20, 10, 0.5), inset 0 1px 2px rgba(255,255,230,0.1);
-      width: min(1200px, 100%);
-      padding: 1.8rem 2rem 2rem;
-      transition: background 0.3s, border 0.2s;
-    }
+        .gradient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(ellipse at 20% 80%, rgba(0, 87, 184, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(0, 166, 81, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 40% 40%, rgba(255, 215, 0, 0.08) 0%, transparent 40%),
+                var(--bg-primary);
+            animation: gradientShift 20s ease-in-out infinite;
+        }
 
-    /* header area */
-    .app-header {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
-    }
-    .title-section h1 {
-      font-size: clamp(1.8rem, 5vw, 2.8rem);
-      font-weight: 600;
-      letter-spacing: -0.02em;
-      background: linear-gradient(130deg, #ffe9b0, #b7efcd, #9ed6f2);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      text-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    }
-    .title-section p {
-      color: rgba(255, 250, 220, 0.9);
-      font-weight: 400;
-      font-size: 1rem;
-    }
-    .theme-toggle {
-      background: rgba(255,255,245,0.1);
-      border: 1px solid rgba(255,210,90,0.4);
-      border-radius: 4rem;
-      padding: 0.4rem 0.6rem;
-      display: flex;
-      gap: 0.5rem;
-      backdrop-filter: blur(4px);
-    }
-    .theme-toggle button {
-      background: transparent;
-      border: none;
-      font-size: 1.4rem;
-      padding: 0.2rem 0.7rem;
-      border-radius: 3rem;
-      cursor: pointer;
-      transition: 0.2s;
-      color: #ffecb3;
-    }
-    body.light .theme-toggle button {
-      color: #3a5a4a;
-    }
-    .theme-toggle button.active-theme {
-      background: rgba(250, 235, 150, 0.3);
-      box-shadow: 0 0 8px #f9c35c;
-    }
+        @keyframes gradientShift {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-2%, -2%) scale(1.02); }
+        }
 
-    /* controls */
-    .subject-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin-bottom: 2rem;
-      align-items: center;
-    }
-    .subject-selector {
-      background: rgba(15, 40, 35, 0.45);
-      backdrop-filter: blur(8px);
-      padding: 0.7rem 1.5rem;
-      border-radius: 3rem;
-      border: 1px solid rgba(255, 200, 100, 0.4);
-      font-size: 1rem;
-      font-weight: 500;
-      color: #fef7e6;
-      outline: none;
-      cursor: pointer;
-      flex: 1 1 220px;
-    }
-    .subject-selector option {
-      background: #0a2f28;
-      color: #f0e5d2;
-    }
-    .voice-indicator {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      color: #d9f0d9;
-      font-size: 0.95rem;
-      background: rgba(0,0,0,0.2);
-      padding: 0.2rem 1rem;
-      border-radius: 2rem;
-    }
-    .voice-indicator span {
-      font-size: 1.2rem;
-    }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
 
-    /* chat window */
-    .chat-window {
-      background: rgba(0, 12, 10, 0.2);
-      border-radius: 2rem;
-      padding: 1.8rem 1.2rem;
-      max-height: 400px;
-      min-height: 280px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      margin-bottom: 1.7rem;
-      scroll-behavior: smooth;
-      border: 1px solid rgba(255, 210, 120, 0.15);
-    }
-    .message {
-      max-width: 80%;
-      padding: 1rem 1.4rem;
-      border-radius: 1.8rem;
-      line-height: 1.5;
-      font-size: 1rem;
-      box-shadow: 0 8px 16px -12px black;
-      transition: 0.2s;
-      word-break: break-word;
-    }
-    .user-message {
-      align-self: flex-end;
-      background: rgba(45, 120, 100, 0.45);
-      backdrop-filter: blur(4px);
-      border-bottom-right-radius: 0.4rem;
-      color: #f5f2e0;
-      border: 1px solid rgba(255, 215, 120, 0.3);
-    }
-    .ai-message {
-      align-self: flex-start;
-      background: rgba(150, 120, 50, 0.4);
-      backdrop-filter: blur(4px);
-      border-bottom-left-radius: 0.4rem;
-      color: #fffbee;
-      border: 1px solid rgba(255, 230, 170, 0.4);
-    }
-    .typing-indicator {
-      display: flex;
-      gap: 0.5rem;
-      padding: 1rem 1.6rem;
-      background: rgba(60, 65, 40, 0.4);
-      border-radius: 4rem;
-      align-self: flex-start;
-      backdrop-filter: blur(4px);
-      color: #ecd9a2;
-    }
-    .typing-indicator span {
-      width: 0.6rem;
-      height: 0.6rem;
-      background: #facf8b;
-      border-radius: 50%;
-      animation: thinking 1.4s infinite;
-      opacity: 0.7;
-    }
-    .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
-    .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1rem 0;
+        }
 
-    @keyframes thinking {
-      0%, 100% { transform: scale(1); opacity: 0.4; }
-      50% { transform: scale(1.3); opacity: 1; background: #ffdd9e; }
-    }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
 
-    /* input */
-    .input-panel {
-      display: flex;
-      gap: 0.8rem;
-      flex-wrap: wrap;
-    }
-    textarea {
-      flex: 1 1 250px;
-      background: rgba(20, 35, 30, 0.5);
-      border: 1px solid rgba(250, 200, 90, 0.3);
-      border-radius: 2.5rem;
-      padding: 1rem 1.5rem;
-      font-size: 1rem;
-      color: #f9f2da;
-      outline: none;
-      resize: vertical;
-      min-height: 60px;
-      backdrop-filter: blur(4px);
-      transition: border 0.2s;
-    }
-    textarea:focus {
-      border-color: #fdcd6e;
-    }
-    .action-buttons {
-      display: flex;
-      gap: 0.5rem;
-    }
-    .btn {
-      background: rgba(30, 65, 50, 0.7);
-      border: 1px solid rgba(255, 195, 80, 0.5);
-      padding: 0 2rem;
-      border-radius: 3rem;
-      font-size: 1rem;
-      font-weight: 500;
-      color: #fff4dd;
-      cursor: pointer;
-      backdrop-filter: blur(8px);
-      transition: 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-      white-space: nowrap;
-    }
-    .btn:hover {
-      background: rgba(40, 90, 70, 0.8);
-      border-color: #ffcd7e;
-      box-shadow: 0 6px 14px rgba(0, 30, 10, 0.4);
-    }
-    .btn.speak {
-      background: rgba(160, 120, 40, 0.6);
-    }
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-green));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px var(--shadow);
+        }
 
-    /* micro animation */
-    .cursor-typing {
-      display: inline-block;
-      width: 2px;
-      height: 1.2em;
-      background: #fbe593;
-      margin-left: 4px;
-      vertical-align: middle;
-      animation: blink 1s infinite;
-    }
-    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+        .logo-text h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
 
-    .footer-note {
-      text-align: center;
-      margin-top: 1.5rem;
-      font-size: 0.8rem;
-      color: rgba(230, 240, 200, 0.6);
-    }
+        .logo-text p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
 
-    /* scrollbar */
-    .chat-window::-webkit-scrollbar { width: 6px; }
-    .chat-window::-webkit-scrollbar-track { background: transparent; }
-    .chat-window::-webkit-scrollbar-thumb { background: #b8a36d; border-radius: 10px; }
-  </style>
+        .controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .theme-toggle {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .main-content {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 2rem;
+            height: calc(100vh - 200px);
+        }
+
+        .sidebar {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            box-shadow: 0 8px 32px var(--shadow);
+        }
+
+        .subject-selector {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .subject-selector label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .subject-dropdown {
+            background: var(--bg-secondary);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 0.875rem 1rem;
+            font-size: 1rem;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .subject-dropdown:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        .quick-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .quick-actions h3 {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .action-btn {
+            background: rgba(0, 87, 184, 0.1);
+            border: 1px solid rgba(0, 87, 184, 0.2);
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .action-btn:hover {
+            background: rgba(0, 87, 184, 0.2);
+            transform: translateX(4px);
+        }
+
+        .chat-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 8px 32px var(--shadow);
+        }
+
+        .chat-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--primary-green);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            scroll-behavior: smooth;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 1rem 1.25rem;
+            border-radius: 18px;
+            line-height: 1.6;
+            animation: messageSlide 0.3s ease;
+            position: relative;
+        }
+
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            align-self: flex-end;
+            background: linear-gradient(135deg, var(--primary-blue), #0066cc);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.ai {
+            align-self: flex-start;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border-bottom-left-radius: 4px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .message-header {
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            opacity: 0.8;
+        }
+
+        .thinking {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            padding: 1rem;
+        }
+
+        .thinking-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .thinking-dots span {
+            width: 8px;
+            height: 8px;
+            background: var(--primary-blue);
+            border-radius: 50%;
+            animation: thinkingBounce 1.4s infinite ease-in-out both;
+        }
+
+        .thinking-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .thinking-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes thinkingBounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        .chat-input-container {
+            padding: 1.25rem 1.5rem;
+            border-top: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 0.75rem;
+            align-items: flex-end;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: var(--bg-secondary);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 0.875rem 1.25rem;
+            font-size: 1rem;
+            color: var(--text-primary);
+            resize: none;
+            outline: none;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            min-height: 50px;
+            max-height: 120px;
+        }
+
+        .chat-input:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        .send-btn {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-green));
+            border: none;
+            border-radius: 14px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .send-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px var(--accent-glow);
+        }
+
+        .send-btn:active {
+            transform: scale(0.95);
+        }
+
+        .voice-btn {
+            width: 50px;
+            height: 50px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            color: var(--text-primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .voice-btn:hover {
+            background: rgba(0, 166, 81, 0.1);
+            border-color: var(--primary-green);
+        }
+
+        .voice-btn.active {
+            background: rgba(0, 166, 81, 0.2);
+            border-color: var(--primary-green);
+            animation: voicePulse 1.5s infinite;
+        }
+
+        @keyframes voicePulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(0, 166, 81, 0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(0, 166, 81, 0); }
+        }
+
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        @media (max-width: 968px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+
+            .sidebar {
+                order: 2;
+            }
+
+            .chat-container {
+                order: 1;
+                height: 60vh;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .message {
+                max-width: 90%;
+            }
+        }
+
+        .welcome-screen {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .welcome-screen h2 {
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .welcome-screen p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .feature-pills {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .pill {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
 </head>
 <body>
-  <div class="glass-card" id="appContainer">
-    <div class="app-header">
-      <div class="title-section">
-        <h1>🇷🇼 Teacher AI 2026</h1>
-        <p>smart learning · ikinyarwanda · steam</p>
-      </div>
-      <div class="theme-toggle" id="themeToggle">
-        <button id="lightThemeBtn" class="active-theme" aria-label="Light theme">☀️</button>
-        <button id="darkThemeBtn" aria-label="Dark theme">🌙</button>
-      </div>
+    <div class="gradient-bg"></div>
+    
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="logo-icon">🎓</div>
+                <div class="logo-text">
+                    <h1>Teacher AI Rwanda</h1>
+                    <p>Smart Learning Platform 2026</p>
+                </div>
+            </div>
+            <div class="controls">
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <span id="theme-icon">🌙</span>
+                    <span id="theme-text">Dark</span>
+                </button>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <aside class="sidebar">
+                <div class="subject-selector">
+                    <label>Select Subject</label>
+                    <select class="subject-dropdown" id="subjectSelect">
+                        <option value="general">📚 General Knowledge</option>
+                        <option value="mathematics">🔢 Mathematics</option>
+                        <option value="english">📝 English Language</option>
+                        <option value="science">🔬 Science</option>
+                        <option value="kinyarwanda">🇷🇼 Kinyarwanda</option>
+                        <option value="history">🏛️ History</option>
+                    </select>
+                </div>
+
+                <div class="quick-actions">
+                    <h3>Quick Start</h3>
+                    <button class="action-btn" onclick="sendQuickMessage('Explain this topic step by step')">📖 Explain step by step</button>
+                    <button class="action-btn" onclick="sendQuickMessage('Give me practice questions')">✏️ Practice questions</button>
+                    <button class="action-btn" onclick="sendQuickMessage('Help me understand the basics')">🎯 Back to basics</button>
+                    <button class="action-btn" onclick="sendQuickMessage('Real-life examples please')">🌍 Real-life examples</button>
+                </div>
+
+                <div class="quick-actions">
+                    <h3>Study Tools</h3>
+                    <button class="action-btn" onclick="sendQuickMessage('Create a study plan for me')">📅 Study plan</button>
+                    <button class="action-btn" onclick="sendQuickMessage('Quiz me on this subject')">🎮 Quiz mode</button>
+                </div>
+            </aside>
+
+            <main class="chat-container">
+                <div class="chat-header">
+                    <div class="chat-status">
+                        <span class="status-dot"></span>
+                        <span>AI Teacher Online</span>
+                    </div>
+                    <span id="currentSubject" style="font-size: 0.85rem; color: var(--text-secondary);">General Knowledge</span>
+                </div>
+
+                <div class="chat-messages" id="chatMessages">
+                    <div class="welcome-screen" id="welcomeScreen">
+                        <h2>Muraho! Welcome to Your AI Teacher 👋</h2>
+                        <p>I'm here to help you learn and grow. Select a subject from the sidebar or ask me anything. I'll explain concepts clearly and guide you step by step.</p>
+                        <div class="feature-pills">
+                            <span class="pill">🎯 Personalized Learning</span>
+                            <span class="pill">🔊 Voice Enabled</span>
+                            <span class="pill">🇷🇼 Rwanda Curriculum</span>
+                            <span class="pill">⚡ Instant Help</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chat-input-container">
+                    <div class="input-wrapper">
+                        <button class="voice-btn" id="voiceBtn" onclick="toggleVoice()" title="Text to Speech">
+                            🔊
+                        </button>
+                        <textarea 
+                            class="chat-input" 
+                            id="chatInput" 
+                            placeholder="Ask your question here..." 
+                            rows="1"
+                            onkeydown="handleKeyDown(event)"
+                            oninput="autoResize(this)"
+                        ></textarea>
+                        <button class="send-btn" onclick="sendMessage()" title="Send">
+                            ➤
+                        </button>
+                    </div>
+                </div>
+            </main>
+        </div>
     </div>
 
-    <div class="subject-row">
-      <select id="subjectSelect" class="subject-selector">
-        <option value="Mathematics">📐 Mathematics</option>
-        <option value="English">📖 English</option>
-        <option value="Science">🔬 Science</option>
-        <option value="Kinyarwanda">🗣️ Kinyarwanda</option>
-        <option value="History">🏛️ History</option>
-        <option value="General">🌍 General</option>
-      </select>
-      <div class="voice-indicator" id="voiceIndicator">
-        <span>🔊</span> <span id="voiceStatus">voice on</span>
-      </div>
-    </div>
-
-    <!-- chat messages container -->
-    <div class="chat-window" id="chatWindow">
-      <div class="message ai-message" id="welcomeMsg"> Muraho! I'm Teacher AI Rwanda. Choose a subject and ask anything. </div>
-      <!-- messages will be injected here -->
-    </div>
-
-    <!-- typing loading state (hidden by default) -->
-    <div id="thinkingIndicator" class="typing-indicator" style="display: none; margin-bottom: 12px;">
-      <span></span><span></span><span></span><span style="margin-left: 8px;">thinking...</span>
-    </div>
-
-    <div class="input-panel">
-      <textarea id="userInput" placeholder="Ask a question... (e.g., solve 2x+3=7)" rows="1"></textarea>
-      <div class="action-buttons">
-        <button class="btn" id="sendBtn">📤 Send</button>
-        <button class="btn speak" id="speakBtn">🔊 Speak</button>
-      </div>
-    </div>
-    <div class="footer-note">✨ step‑by‑step · encouraging · always curious</div>
-  </div>
-
-  <script>
-    (function() {
-      // ---------- DOM elements ----------
-      const body = document.body;
-      const chatWindow = document.getElementById('chatWindow');
-      const userInput = document.getElementById('userInput');
-      const sendBtn = document.getElementById('sendBtn');
-      const speakBtn = document.getElementById('speakBtn');
-      const subjectSelect = document.getElementById('subjectSelect');
-      const thinkingDiv = document.getElementById('thinkingIndicator');
-      const voiceStatus = document.getElementById('voiceStatus');
-      const lightBtn = document.getElementById('lightThemeBtn');
-      const darkBtn = document.getElementById('darkThemeBtn');
-
-      // ---------- state ----------
-      let isThinking = false;
-      let speechSupported = true;
-      if (!window.speechSynthesis) {
-        voiceStatus.innerText = 'voice unavailable';
-        speechSupported = false;
-        speakBtn.disabled = true;
-        speakBtn.style.opacity = 0.5;
-      }
-
-      // ---------- theme ----------
-      function setTheme(theme) {
-        if (theme === 'light') {
-          body.classList.add('light');
-          lightBtn.classList.add('active-theme');
-          darkBtn.classList.remove('active-theme');
-        } else {
-          body.classList.remove('light');
-          darkBtn.classList.add('active-theme');
-          lightBtn.classList.remove('active-theme');
-        }
-      }
-      lightBtn.addEventListener('click', () => setTheme('light'));
-      darkBtn.addEventListener('click', () => setTheme('dark'));
-
-      // ---------- helpers ----------
-      function addMessage(text, sender = 'ai', animate = false) {
-        const msgDiv = document.createElement('div');
-        msgDiv.classList.add('message', sender === 'ai' ? 'ai-message' : 'user-message');
-
-        if (animate && sender === 'ai') {
-          // typing animation effect (simulated)
-          let i = 0;
-          const speed = 20;
-          msgDiv.innerHTML = ''; // will fill gradually
-          chatWindow.appendChild(msgDiv);
-          chatWindow.scrollTop = chatWindow.scrollHeight;
-
-          function typeChar() {
-            if (i < text.length) {
-              msgDiv.innerHTML += text.charAt(i) === '\n' ? '<br>' : text.charAt(i);
-              i++;
-              setTimeout(typeChar, speed);
-              chatWindow.scrollTop = chatWindow.scrollHeight;
-            } else {
-              // add blinking cursor at end for a moment? remove if needed, but we can add a small cursor effect
-              const cursorSpan = document.createElement('span');
-              cursorSpan.className = 'cursor-typing';
-              msgDiv.appendChild(cursorSpan);
-              setTimeout(() => cursorSpan.remove(), 800);
+    <script>
+        const knowledgeBase = {
+            mathematics: {
+                greetings: ["Welcome to Mathematics! I'm excited to help you master numbers and patterns.", "Hello! Ready to explore the beautiful world of mathematics together?", "Muraho! Let's make math simple and fun for you."],
+                thinking: ["Analyzing the mathematical structure...", "Calculating the best approach...", "Breaking down the problem into steps..."],
+                prefixes: ["Here's how we solve this step by step:", "Let me guide you through this mathematical concept:", "I'll explain this clearly with examples:"],
+                topics: {
+                    algebra: "Algebra is like solving puzzles. We use letters to represent unknown numbers. For example, if x + 5 = 12, we find x by subtracting 5 from both sides: x = 7.",
+                    geometry: "Geometry studies shapes and spaces. A triangle has three sides and angles that add up to 180 degrees. Circles have radius (center to edge) and diameter (edge to edge through center).",
+                    arithmetic: "Arithmetic is the foundation: addition (+), subtraction (-), multiplication (×), and division (÷). Remember PEMDAS: Parentheses, Exponents, Multiplication/Division, Addition/Subtraction.",
+                    fractions: "Fractions represent parts of a whole. The top number (numerator) shows how many parts we have. The bottom (denominator) shows total parts. To add fractions, find a common denominator first."
+                }
+            },
+            english: {
+                greetings: ["Welcome to English! Let's improve your language skills together.", "Hello! I'm here to help you communicate with confidence.", "Muraho! English opens doors to the world. Let's learn!"],
+                thinking: ["Analyzing grammar and vocabulary...", "Structuring the explanation...", "Finding the best examples..."],
+                prefixes: ["Here's how to understand this:", "Let me break down the English concept:", "I'll explain with clear examples:"],
+                topics: {
+                    grammar: "Grammar is the structure of language. Subject comes first: 'The student (subject) reads (verb) books (object).' Adjectives describe nouns: 'The tall tree.' Adverbs describe verbs: 'She runs quickly.'",
+                    vocabulary: "Build vocabulary by reading daily. Context clues help understand new words. Root words: 'bio' means life (biology, biography). Prefixes like 'un-' mean not (happy → unhappy).",
+                    writing: "Good writing has a clear beginning, middle, and end. Start with a hook to grab attention. Use transition words: however, therefore, meanwhile. Always proofread!",
+                    speaking: "Speak clearly and confidently. Practice the TH sound by putting tongue between teeth. Intonation changes meaning: 'Really?' (surprise) vs 'Really.' (confirmation)."
+                }
+            },
+            science: {
+                greetings: ["Welcome to Science! Let's explore how the world works.", "Hello! Curiosity drives discovery. What shall we investigate?", "Muraho! Science is everywhere around us in Rwanda!"],
+                thinking: ["Examining scientific principles...", "Connecting concepts to real examples...", "Preparing experimental context..."],
+                prefixes: ["Here's the scientific explanation:", "Let me show you how this works in nature:", "Science reveals that:"],
+                topics: {
+                    biology: "Living things share characteristics: they grow, reproduce, respond to stimuli, and need energy. Cells are the basic units of life. Plants make food through photosynthesis using sunlight, water, and CO2.",
+                    physics: "Forces change motion. Newton's First Law: objects stay still or move steadily unless acted upon. Gravity pulls us toward Earth's center. Friction opposes motion—helpful for walking, challenging for sliding.",
+                    chemistry: "Matter exists as solid, liquid, or gas. Atoms are tiny building blocks. Water is H2O—two hydrogen atoms bonded to one oxygen. Chemical reactions rearrange atoms but don't create or destroy them.",
+                    environment: "Ecosystems depend on balance. Producers (plants) make food. Consumers (animals) eat. Decomposers recycle nutrients. Rwanda's reforestation helps restore this balance and fight climate change."
+                }
+            },
+            kinyarwanda: {
+                greetings: ["Mwaramutse! Turanezerewe kubana nawe.", "Muraho! Reba uko twiga ikinyarwanda neza.", "Amakuru! Ikinyarwanda ni ururimi rwiza."],
+                thinking: ["Gutegura igisubizo...", "Gusoza uburyo bwo kwigisha...", "Gushaka ibyitegerezo..."],
+                prefixes: ["Ngitangire nkurikije:", "Reba uko bisoboka:", "Nkimara gusobanura:"],
+                topics: {
+                    grammar: "Ikinyarwanda gifite inyuguti 24. Indanga (nouns) zigira uburinganire: umwana (umwe), abana (benshi). Icese (verbs) zihinduka: ndi (I am), uri (you are), ari (he/she is).",
+                    culture: "Imbonezamuryango (proverbs) zigira uburenganzira: 'Akabando k'inyana ntikamara ubusa'—small savings matter. Greetings matter: 'Amakuru?' asks for news, showing care for community.",
+                    poetry: "Ibyivugo (poetry) uses imagination and rhythm. 'Rwanda nziza' by Mutabaruka celebrates our hills. Traditional songs (intwatwa) pass history to new generations.",
+                    conversation: "Daily phrases: 'Mwaramutse' (good morning), 'Muraho' (hello), 'Amakuru' (how are you), 'Meza' (fine), 'Murakoze' (thank you), 'Nawe' (you too)."
+                }
+            },
+            history: {
+                greetings: ["Welcome to History! Understanding our past shapes our future.", "Hello! Let's explore Rwanda's rich heritage together.", "Muraho! Our history teaches us strength and unity."],
+                thinking: ["Researching historical context...", "Connecting past to present...", "Verifying historical facts..."],
+                prefixes: ["Historically, this period shows us:", "Looking back, we can see:", "Our history teaches us that:"],
+                topics: {
+                    rwanda: "Rwanda has been inhabited for thousands of years. The Kingdom of Rwanda united under mwami (king) by the 18th century. German colonization came in 1897, then Belgian rule. Independence arrived in 1962.",
+                    genocide: "The 1994 Genocide against the Tutsi was a tragedy that killed over one million. But from ashes rose strength. Today Rwanda leads in reconciliation, gender equality, and technological innovation.",
+                    unity: "Ndi Umunyarwanda (I am Rwandan) promotes unity. Gacaca courts achieved justice and healing. Our flag's colors mean: blue (peace), yellow (prosperity), green (hope), sun (light).",
+                    development: "Vision 2050 guides Rwanda to high-income status. Umuganda (community work) happens monthly. Rwanda was first country with female majority parliament. We host the African Union summit and global forums."
+                }
+            },
+            general: {
+                greetings: ["Hello! I'm your AI teacher. What would you like to learn today?", "Welcome! I can help with any subject. What's on your mind?", "Muraho! Ready to explore knowledge together?"],
+                thinking: ["Analyzing your question...", "Drawing from multiple subjects...", "Preparing comprehensive guidance..."],
+                prefixes: ["Here's what I can tell you:", "Let me explain this clearly:", "I'll help you understand:"],
+                topics: {
+                    study: "Effective studying: 1) Set specific goals 2) Use active recall (test yourself) 3) Space out sessions 4) Teach others 5) Sleep well—memory consolidates during rest. The Pomodoro technique: 25 minutes focus, 5 minutes break.",
+                    motivation: "Growth mindset: abilities develop through effort. Mistakes grow your brain. Set SMART goals: Specific, Measurable, Achievable, Relevant, Time-bound. Celebrate small wins!",
+                    exams: "Exam strategy: Read all questions first. Start with what you know. Manage time—don't spend too long on one question. Review answers if time permits. Stay calm: deep breaths reduce anxiety.",
+                    future: "Rwanda's youth are the future. Digital skills, critical thinking, and creativity matter. Consider STEM fields, entrepreneurship, or arts. Continuous learning opens doors globally while serving our nation."
+                }
             }
-          }
-          typeChar();
-        } else {
-          msgDiv.innerText = text;
-          chatWindow.appendChild(msgDiv);
-          chatWindow.scrollTop = chatWindow.scrollHeight;
+        };
+
+        let currentSubject = 'general';
+        let isTyping = false;
+        let voiceEnabled = false;
+        let synth = window.speechSynthesis;
+
+        const subjectNames = {
+            mathematics: 'Mathematics',
+            english: 'English',
+            science: 'Science',
+            kinyarwanda: 'Kinyarwanda',
+            history: 'History',
+            general: 'General Knowledge'
+        };
+
+        document.getElementById('subjectSelect').addEventListener('change', (e) => {
+            currentSubject = e.target.value;
+            document.getElementById('currentSubject').textContent = subjectNames[currentSubject];
+            addMessage('ai', `Switched to ${subjectNames[currentSubject]}. ${getRandomItem(knowledgeBase[currentSubject].greetings)}`);
+        });
+
+        function getRandomItem(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
         }
-        if (!animate) chatWindow.scrollTop = chatWindow.scrollHeight;
-      }
 
-      // AI reasoning engine (subject‑aware, step‑by‑step, teacher tone)
-      function generateAIResponse(question, subject) {
-        const q = question.toLowerCase();
-        // Professional & structured, Rwanda flavour
-        const mathResponses = [
-          "Let’s solve step by step. First, identify the operation. If 2x + 3 = 7, subtract 3 from both sides → 2x = 4. Then divide by 2 → x = 2. Do you see why we do inverse operations?",
-          "To find the area of a rectangle: length × width. For a rectangle of length 8cm and width 3cm, area = 24 cm². In real life, we use this to measure fields or classrooms. Need another example?",
-          "Fractions: ⅓ + ⅙ requires common denominator (6). ⅓ = 2/6, so 2/6+1/6=3/6=1/2. Think of slicing an umutsima wafer into pieces."
-        ];
-        const englishResponses = [
-          "Great question! The past tense of 'go' is 'went'. Example: 'Yesterday we went to school.' Irregular verbs have special forms. Would you like a list of common irregular verbs?",
-          "A simple sentence has a subject and verb: 'The teacher explains.' To add detail, use adjectives: 'The kind teacher explains clearly.' Let's practise building sentences.",
-          "When forming questions in English: 'Do you like reading?' For he/she/it we use 'Does' — 'Does she like reading?'."
-        ];
-        const scienceResponses = [
-          "Photosynthesis: plants use sunlight, water and CO₂ to make glucose and oxygen. Equation: 6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂. In Rwanda, think of banana leaves or ipamba.",
-          "The water cycle: evaporation (from Lake Kivu), condensation (clouds), precipitation (rain), collection. It never stops — it's Earth's natural recycling.",
-          "Matter exists as solid, liquid, gas. Ice (solid) melts into water (liquid), heated becomes vapour (gas). Can you name a solid in your kitchen?"
-        ];
-        const kinyarwandaResponses = [
-          "Injya! 'Amata' n'ijambo ry'ikinyarwanda risobanura 'milk'. Urugero: 'Ndahaza amata' – I drink milk. None se wifuza kumenya izindi nshinga?",
-          "Mu Kinyarwanda, inshinga zihinduka ukurikije igihe. 'Gusoma' (to read) -> ndasoma (present), nasomye (past). Reka twifatire urugero: 'Ejo nasomye igitabo'.",
-          "Amagambo y'ibanze: Muraho (hello), murakoze (thank you), amakuru (news). Ni iki ushaka kumenya? Saba umwarimu."
-        ];
-        const historyResponses = [
-          "Rwanda's history: before colonial rule, it was a centralized monarchy under the Umwami. In 1890, it became part of German East Africa, later Belgian mandate. Independence came in 1962.",
-          "The 1994 genocide against the Tutsi deeply affected our nation. Today we unite as 'Ndi Umunyarwanda'. Would you like to discuss unity and reconciliation efforts?",
-          "Oral tradition preserved our history: ibitekerezo, dynastic poetry. King Mutara III Rudahigwa was known for modernizing. Ask me about any Mwami."
-        ];
-        const generalResponses = [
-          "That's a thoughtful question. In general, learning is about curiosity. Could you tell me more about what you'd like to explore today?",
-          "As your AI teacher, I'd say: break big problems into small steps. Whether in Kigali or countryside, every question leads to understanding. Want to focus on something specific?",
-          "Great! Always ask 'why'. In 2026, smart learning means using technology to think deeper. What's on your mind?"
-        ];
-
-        let pool;
-        switch(subject) {
-          case 'Mathematics': pool = mathResponses; break;
-          case 'English': pool = englishResponses; break;
-          case 'Science': pool = scienceResponses; break;
-          case 'Kinyarwanda': pool = kinyarwandaResponses; break;
-          case 'History': pool = historyResponses; break;
-          default: pool = generalResponses;
+        function handleKeyDown(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
         }
-        // pick semi-randomly based on question length for variety
-        const index = (q.length + question.length) % pool.length;
-        let base = pool[index];
 
-        // Occasionally ask clarifying question (teacher tone)
-        if (q.includes('help') || q.includes('how to') || q.includes('explain')) {
-          base += ' Would you like me to go deeper or provide another example?';
+        function autoResize(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
         }
-        return base;
-      }
 
-      // simulate thinking and respond
-      function handleUserMessage() {
-        const question = userInput.value.trim();
-        if (!question || isThinking) return;
+        function sendQuickMessage(text) {
+            document.getElementById('chatInput').value = text;
+            sendMessage();
+        }
 
-        // add user message
-        addMessage(question, 'user', false);
-        userInput.value = '';
-        isThinking = true;
-        thinkingDiv.style.display = 'flex';
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message || isTyping) return;
 
-        const subject = subjectSelect.value;
+            document.getElementById('welcomeScreen')?.classList.add('hidden');
+            
+            addMessage('user', message);
+            input.value = '';
+            input.style.height = 'auto';
+            
+            showThinking();
+            
+            const delay = 1500 + Math.random() * 1000;
+            setTimeout(() => {
+                removeThinking();
+                const response = generateResponse(message);
+                typeMessage(response);
+            }, delay);
+        }
 
-        // Simulate "reasoning" delay (400–900ms)
-        setTimeout(() => {
-          const rawAnswer = generateAIResponse(question, subject);
-          // add AI message with typing effect
-          addMessage(rawAnswer, 'ai', true);
+        function addMessage(sender, text) {
+            const container = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            const header = document.createElement('div');
+            header.className = 'message-header';
+            header.textContent = sender === 'user' ? 'You' : 'AI Teacher';
+            
+            const content = document.createElement('div');
+            content.textContent = text;
+            
+            messageDiv.appendChild(header);
+            messageDiv.appendChild(content);
+            container.appendChild(messageDiv);
+            container.scrollTop = container.scrollHeight;
+        }
 
-          // hide thinking
-          thinkingDiv.style.display = 'none';
-          isThinking = false;
+        function showThinking() {
+            isTyping = true;
+            const container = document.getElementById('chatMessages');
+            const thinkingDiv = document.createElement('div');
+            thinkingDiv.className = 'thinking';
+            thinkingDiv.id = 'thinkingIndicator';
+            
+            const text = document.createElement('span');
+            text.textContent = getRandomItem(knowledgeBase[currentSubject].thinking);
+            
+            const dots = document.createElement('div');
+            dots.className = 'thinking-dots';
+            dots.innerHTML = '<span></span><span></span><span></span>';
+            
+            thinkingDiv.appendChild(text);
+            thinkingDiv.appendChild(dots);
+            container.appendChild(thinkingDiv);
+            container.scrollTop = container.scrollHeight;
+        }
 
-          // Auto‑speak if supported (voice output)
-          if (speechSupported && speakBtn.innerText.includes('🔊')) {
-            const utterance = new SpeechSynthesisUtterance(rawAnswer);
-            utterance.lang = subject === 'Kinyarwanda' ? 'rw-RW' : 'en-US';
+        function removeThinking() {
+            const thinking = document.getElementById('thinkingIndicator');
+            if (thinking) thinking.remove();
+        }
+
+        function generateResponse(input) {
+            const lower = input.toLowerCase();
+            const subject = knowledgeBase[currentSubject];
+            let response = getRandomItem(subject.prefixes) + '\n\n';
+            
+            const topicKeys = Object.keys(subject.topics);
+            let matched = false;
+            
+            for (const key of topicKeys) {
+                if (lower.includes(key)) {
+                    response += subject.topics[key];
+                    matched = true;
+                    break;
+                }
+            }
+            
+            if (!matched) {
+                if (lower.includes('hello') || lower.includes('hi') || lower.includes('muraho')) {
+                    response = getRandomItem(subject.greetings);
+                } else if (lower.includes('step by step') || lower.includes('explain')) {
+                    response += subject.topics[topicKeys[0]] + '\n\nStep 1: Understand the basics\nStep 2: Identify what you need to find\nStep 3: Apply the right method\nStep 4: Check your answer\nStep 5: Practice with similar problems';
+                } else if (lower.includes('practice') || lower.includes('question') || lower.includes('quiz')) {
+                    response += `Here's a practice question for you:\n\n${generatePracticeQuestion()}\n\nTake your time, and let me know when you'd like to check your answer!`;
+                } else if (lower.includes('example') || lower.includes('real')) {
+                    response += subject.topics[topicKeys[Math.floor(Math.random() * topicKeys.length)]] + '\n\nCan you think of a similar example from your own experience? This helps cement your understanding.';
+                } else if (lower.includes('study') || lower.includes('plan')) {
+                    response += knowledgeBase.general.topics.study;
+                } else {
+                    response += subject.topics[topicKeys[Math.floor(Math.random() * topicKeys.length)]];
+                }
+            }
+            
+            if (Math.random() > 0.7) {
+                response += '\n\nDoes this make sense? Would you like me to explain any part differently, or shall we move to a practice question?';
+            }
+            
+            return response;
+        }
+
+        function generatePracticeQuestion() {
+            const questions = {
+                mathematics: "If a farmer has 120 trees and plants 15 more each month, how many trees will they have after 8 months?",
+                english: "Identify the adverb in this sentence: 'The students worked diligently on their assignments.'",
+                science: "What gas do plants absorb from the atmosphere during photosynthesis, and what gas do they release?",
+                kinyarwanda: "Sobanura ikigereranyo: 'Akabando k'inyana ntikamara ubusa.' Ni iki uyu muburo ushaka kutwigisha?",
+                history: "In what year did Rwanda gain independence, and from which colonial power?",
+                general: "What are the three main states of matter, and can you give an example of each?"
+            };
+            return questions[currentSubject] || questions.general;
+        }
+
+        function typeMessage(text) {
+            isTyping = true;
+            const container = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message ai';
+            
+            const header = document.createElement('div');
+            header.className = 'message-header';
+            header.textContent = 'AI Teacher';
+            
+            const content = document.createElement('div');
+            content.className = 'typing-cursor';
+            
+            messageDiv.appendChild(header);
+            messageDiv.appendChild(content);
+            container.appendChild(messageDiv);
+            container.scrollTop = container.scrollHeight;
+            
+            let index = 0;
+            const speed = 20;
+            
+            function type() {
+                if (index < text.length) {
+                    content.textContent += text.charAt(index);
+                    index++;
+                    container.scrollTop = container.scrollHeight;
+                    setTimeout(type, speed);
+                } else {
+                    content.classList.remove('typing-cursor');
+                    isTyping = false;
+                    if (voiceEnabled) speakText(text);
+                }
+            }
+            
+            type();
+        }
+
+        function toggleVoice() {
+            voiceEnabled = !voiceEnabled;
+            const btn = document.getElementById('voiceBtn');
+            if (voiceEnabled) {
+                btn.classList.add('active');
+                btn.innerHTML = '🔊';
+            } else {
+                btn.classList.remove('active');
+                btn.innerHTML = '🔇';
+                synth.cancel();
+            }
+        }
+
+        function speakText(text) {
+            if (!synth) return;
+            synth.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
             utterance.rate = 0.9;
-            utterance.pitch = 1.1;
-            speechSynthesis.cancel(); // avoid overlapping
-            speechSynthesis.speak(utterance);
-          }
-        }, 600); // thinking delay
-      }
-
-      // speak the last AI message (if any) or welcome
-      function speakLastMessage() {
-        if (!speechSupported) return;
-        const messages = document.querySelectorAll('.ai-message');
-        let lastAI;
-        if (messages.length) lastAI = messages[messages.length-1]?.innerText;
-        else lastAI = "Muraho! I'm your AI teacher. Please ask something.";
-        // remove possible cursor span
-        const text = lastAI.replace(/<span.*?>.*?<\/span>/g, '').trim();
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.rate = 0.9;
-        speechSynthesis.cancel();
-        speechSynthesis.speak(utterance);
-      }
-
-      // event listeners
-      sendBtn.addEventListener('click', () => handleUserMessage());
-      userInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-          e.preventDefault();
-          handleUserMessage();
+            utterance.pitch = 1;
+            utterance.lang = currentSubject === 'kinyarwanda' ? 'rw-RW' : 'en-US';
+            synth.speak(utterance);
         }
-      });
-      speakBtn.addEventListener('click', speakLastMessage);
 
-      // clear welcome if needed, but keep as first message
-      // ensure no console errors: pre-check speech synthesis
-      window.addEventListener('load', () => {
-        // show welcome already present
-        if (speechSupported) {
-          // just preload voices
-          window.speechSynthesis.getVoices();
+        function toggleTheme() {
+            const html = document.documentElement;
+            const current = html.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            
+            document.getElementById('theme-icon').textContent = next === 'dark' ? '☀️' : '🌙';
+            document.getElementById('theme-text').textContent = next === 'dark' ? 'Light' : 'Dark';
         }
-      });
 
-      // optional: stop any speaking when new message
-      const originalAdd = addMessage;
-      window.addMessage = function() {
-        if (speechSupported) speechSynthesis.cancel();
-        originalAdd.apply(this, arguments);
-      };
-      // but we want speak only when auto checked, already inside timeout
-      // final detail: toggle voice indicator? can be static
-    })();
-  </script>
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            toggleTheme();
+        }
+    </script>
 </body>
 </html>
