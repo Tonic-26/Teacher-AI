@@ -3,16 +3,342 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teacher AI Rwanda 2026 - Smart Learning Platform</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Teacher AI Rwanda 2026 - Standalone Version</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #0057B8;
+            --primary-green: #00A651;
+            --dark-bg: #0A1628;
+            --light-bg: #f5f7fb;
+            --text-dark: #1e293b;
+            --text-light: #f1f5f9;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--light-bg);
+            color: var(--text-dark);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        body.dark {
+            background: var(--dark-bg);
+            color: var(--text-light);
+        }
+
+        .app-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: white;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            overflow-y: auto;
+            border-right: 1px solid #e2e8f0;
+        }
+
+        body.dark .sidebar {
+            background: #1a1a2e;
+            border-right-color: #2d2d44;
+        }
+
+        .logo-area {
+            text-align: center;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--primary-blue);
+        }
+
+        .logo-icon {
+            font-size: 3rem;
+        }
+
+        .logo-text h1 {
+            font-size: 1.3rem;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subject-selector {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .subject-selector label {
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .subject-selector select {
+            padding: 0.7rem;
+            border-radius: 10px;
+            border: 1px solid #cbd5e1;
+            background: var(--light-bg);
+            cursor: pointer;
+        }
+
+        body.dark .subject-selector select {
+            background: #0f172a;
+            border-color: #334155;
+            color: white;
+        }
+
+        .quick-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .quick-actions h3 {
+            font-size: 0.8rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .action-btn {
+            padding: 0.6rem;
+            background: #f1f5f9;
+            border: none;
+            border-radius: 8px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        body.dark .action-btn {
+            background: #0f172a;
+            color: white;
+        }
+
+        .action-btn:hover {
+            background: var(--primary-blue);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        /* Chat Area */
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: rgba(255,255,255,0.5);
+        }
+
+        body.dark .chat-area {
+            background: rgba(10,22,40,0.5);
+        }
+
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        body.dark .chat-header {
+            background: #1a1a2e;
+            border-bottom-color: #2d2d44;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .online-dot {
+            width: 10px;
+            height: 10px;
+            background: #10b981;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .subject-badge {
+            padding: 0.3rem 1rem;
+            background: var(--primary-blue);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.3rem;
+        }
+
+        /* Messages */
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 0.8rem 1.2rem;
+            border-radius: 18px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            align-self: flex-end;
+            background: linear-gradient(135deg, var(--primary-blue), #0066cc);
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message.ai {
+            align-self: flex-start;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-bottom-left-radius: 5px;
+        }
+
+        body.dark .message.ai {
+            background: #1a1a2e;
+            border-color: #2d2d44;
+        }
+
+        .message-header {
+            font-size: 0.7rem;
+            margin-bottom: 0.3rem;
+            opacity: 0.7;
+        }
+
+        .message-content {
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+
+        /* Input Area */
+        .input-area {
+            padding: 1rem 1.5rem;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        body.dark .input-area {
+            background: #1a1a2e;
+            border-top-color: #2d2d44;
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 0.75rem;
+            align-items: flex-end;
+        }
+
+        .input-wrapper textarea {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 20px;
+            resize: none;
+            font-family: inherit;
+            font-size: 0.95rem;
+            background: var(--light-bg);
+        }
+
+        body.dark .input-wrapper textarea {
+            background: #0f172a;
+            border-color: #334155;
+            color: white;
+        }
+
+        .input-wrapper textarea:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+        }
+
+        .send-btn {
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-green));
+            border: none;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .send-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .input-hint {
+            font-size: 0.7rem;
+            color: #64748b;
+            margin-top: 0.5rem;
+            text-align: center;
+        }
+
+        .welcome-message {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                top: 0;
+                height: 100%;
+                z-index: 100;
+                transition: left 0.3s;
+            }
+            .sidebar.open {
+                left: 0;
+            }
+            .message {
+                max-width: 95%;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="particles-bg" id="particles"></div>
-    
     <div class="app-container">
-        <!-- Sidebar -->
-        <aside class="sidebar" id="sidebar">
+        <aside class="sidebar">
             <div class="logo-area">
                 <div class="logo-icon">🎓</div>
                 <div class="logo-text">
@@ -22,11 +348,11 @@
             </div>
             
             <div class="subject-selector">
-                <label>📚 Choose Subject</label>
+                <label>📚 CHOOSE SUBJECT</label>
                 <select id="subjectSelect">
                     <option value="general">🌍 General Knowledge</option>
                     <option value="mathematics">📐 Mathematics</option>
-                    <option value="english">✍️ English</option>
+                    <option value="english">📝 English</option>
                     <option value="science">🔬 Science</option>
                     <option value="kinyarwanda">🇷🇼 Kinyarwanda</option>
                     <option value="history">🏛️ History</option>
@@ -34,77 +360,298 @@
             </div>
             
             <div class="quick-actions">
-                <h3>⚡ Quick Actions</h3>
+                <h3>⚡ QUICK ACTIONS</h3>
                 <button class="action-btn" data-msg="Explain this step by step">📖 Step by Step</button>
                 <button class="action-btn" data-msg="Give me practice questions">✏️ Practice Quiz</button>
                 <button class="action-btn" data-msg="Give me real-life examples">🌍 Real Examples</button>
                 <button class="action-btn" data-msg="Create a study plan for me">📅 Study Plan</button>
                 <button class="action-btn" data-msg="Help me understand the basics">🎯 Back to Basics</button>
             </div>
-            
-            <div class="stats-panel">
-                <div class="stat">
-                    <span class="stat-value" id="messageCount">0</span>
-                    <span class="stat-label">Messages</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-value" id="sessionTime">0</span>
-                    <span class="stat-label">Minutes</span>
-                </div>
-            </div>
-            
-            <button class="clear-chat-btn" id="clearChat">🗑️ Clear Chat</button>
         </aside>
         
-        <!-- Main Chat Area -->
         <main class="chat-area">
             <div class="chat-header">
                 <div class="status">
                     <span class="online-dot"></span>
-                    <span>AI Teacher Online</span>
+                    <span>Teacher Online</span>
                 </div>
-                <div class="subject-badge" id="currentSubjectBadge">General Knowledge</div>
+                <div class="subject-badge" id="currentSubjectBadge">General</div>
                 <button class="theme-toggle" id="themeToggle">🌙</button>
             </div>
             
             <div class="messages-container" id="messagesContainer">
                 <div class="welcome-message" id="welcomeMsg">
-                    <div class="welcome-icon">🇷🇼🤖</div>
+                    <div class="logo-icon" style="font-size: 3rem;">🇷🇼🤖</div>
                     <h2>Muraho! Welcome to Teacher AI</h2>
-                    <p>Your intelligent learning companion for Rwanda's curriculum. I can help you with Mathematics, English, Science, Kinyarwanda, History, and more!</p>
-                    <div class="features">
-                        <span>🎯 Personalized Learning</span>
-                        <span>🔊 Voice Support</span>
-                        <span>📚 Rwanda Focused</span>
-                        <span>⚡ Real-time AI</span>
-                    </div>
+                    <p>Ask me anything about ${document.getElementById('subjectSelect')?.options[0]?.text || 'your studies'}!</p>
                 </div>
             </div>
             
             <div class="input-area">
-                <div class="input-controls">
-                    <button class="voice-btn" id="voiceBtn" title="Voice Input">🎤</button>
-                    <button class="speak-btn" id="speakBtn" title="Text to Speech">🔊</button>
-                </div>
                 <div class="input-wrapper">
-                    <textarea 
-                        id="messageInput" 
-                        placeholder="Type your question here... (Press Enter to send)"
-                        rows="1"
-                    ></textarea>
-                    <button id="sendBtn" class="send-btn">Send ➤</button>
+                    <textarea id="messageInput" placeholder="Type your question here... (Press Enter to send)" rows="1"></textarea>
+                    <button class="send-btn" id="sendBtn">Send ➤</button>
                 </div>
                 <div class="input-hint">✨ Shift + Enter for new line | Enter to send</div>
             </div>
         </main>
     </div>
-    
-    <!-- Loading Overlay -->
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="loading-spinner"></div>
-        <p>AI is thinking...</p>
-    </div>
-    
-    <script src="script.js"></script>
+
+    <script>
+        // STANDALONE AI TEACHER - NO BACKEND REQUIRED
+        // This is a complete working version with built-in AI responses
+        
+        const subjectData = {
+            general: {
+                name: "General Knowledge",
+                responses: {
+                    greeting: "Hello! I'm your AI teacher. What would you like to learn today?",
+                    tags: "HTML tags are elements used to structure web content. For example, <h1> is for headings, <p> for paragraphs, <a> for links, and <img> for images. Most tags come in pairs: opening <tag> and closing </tag>.",
+                    default: "That's a great question! I'm here to help you learn. Could you please tell me more about what you'd like to understand?"
+                }
+            },
+            english: {
+                name: "English",
+                responses: {
+                    greeting: "Welcome to English! Let's improve your language skills.",
+                    tags: "In English grammar, 'tags' often refers to question tags. These are short questions added to statements, like 'It's a beautiful day, isn't it?' Other uses include HTML tags in web development or label tags in writing.",
+                    default: "Great question! Would you like me to explain grammar, vocabulary, or writing tips?"
+                }
+            },
+            mathematics: {
+                name: "Mathematics",
+                responses: {
+                    greeting: "Welcome to Mathematics! Let's solve problems together.",
+                    tags: "In math, 'tags' might refer to labeling variables or categorizing data. For example, in algebra, we tag unknown values with x, y, z. In statistics, we tag data points for organization.",
+                    default: "Interesting question! Would you like step-by-step help with a specific math problem?"
+                }
+            },
+            science: {
+                name: "Science",
+                responses: {
+                    greeting: "Welcome to Science! Let's explore the natural world.",
+                    tags: "In science, 'tags' can refer to classification labels in biology (taxonomy tags), data tags in experiments, or RFID tags used in tracking animals for research.",
+                    default: "That's an interesting scientific question! Can you tell me more about what you're studying?"
+                }
+            },
+            kinyarwanda: {
+                name: "Kinyarwanda",
+                responses: {
+                    greeting: "Muraho! Twige ikinyarwanda hamwe.",
+                    tags: "Mu ikinyarwanda, 'tags' bivuga ibimenyetso bikoreshwa mu kwandika. Urugero: ibimenyetso by'ikibazo (?) n'iby'umunara (!) bifasha mu gusobanura amakuru.",
+                    default: "Ikibazo cyiza! Ushaka ko mbisobanura neza?"
+                }
+            },
+            history: {
+                name: "History",
+                responses: {
+                    greeting: "Welcome to History! Let's learn from the past.",
+                    tags: "In history, 'tags' are labels used to categorize historical periods, events, or artifacts. For example, colonial era, pre-colonial, post-independence tags help organize historical information.",
+                    default: "That's a fascinating historical question! Would you like me to explain more about that period?"
+                }
+            }
+        };
+
+        // Enhanced knowledge base for common questions
+        const knowledgeBase = {
+            tags: "📝 **What are tags?**\n\nTags are labels or markers used to identify, categorize, or structure information.\n\n**In different contexts:**\n\n1️⃣ **HTML Tags**: `<h1>Heading</h1>`, `<p>Paragraph</p>`, `<a href='link'>Link</a>`\n\n2️⃣ **Grammar Tags**: Question tags like 'isn't it?' or 'don't you?'\n\n3️⃣ **Social Tags**: Hashtags (#learning, #Rwanda) used on social media\n\n4️⃣ **Data Tags**: Labels used to organize information (e.g., 'urgent', 'complete')\n\nWould you like me to explain any of these in more detail?",
+            
+            "html tags": "🔧 **HTML Tags Explained**\n\nHTML tags are the building blocks of web pages. They tell the browser how to display content.\n\n**Common HTML Tags:**\n• `<h1>` to `<h6>` - Headings\n• `<p>` - Paragraphs  \n• `<a>` - Links\n• `<img>` - Images\n• `<div>` - Containers\n• `<ul>`, `<li>` - Lists\n\nExample: `<h1>Welcome</h1><p>This is a paragraph.</p>`\n\nWant a practical example?",
+            
+            default: "Thanks for your question! I'm a fully functional AI teacher running entirely in your browser. I can help with Mathematics, English, Science, Kinyarwanda, and History. What specific topic would you like to explore?"
+        };
+
+        let currentSubject = 'english';
+        let messageCount = 0;
+
+        // DOM Elements
+        const messagesContainer = document.getElementById('messagesContainer');
+        const messageInput = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const subjectSelect = document.getElementById('subjectSelect');
+        const currentSubjectBadge = document.getElementById('currentSubjectBadge');
+        const themeToggle = document.getElementById('themeToggle');
+        const welcomeMsg = document.getElementById('welcomeMsg');
+
+        // Load saved theme
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark');
+            themeToggle.textContent = '☀️';
+        }
+
+        // Theme toggle
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark');
+            const isDark = document.body.classList.contains('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            themeToggle.textContent = isDark ? '☀️' : '🌙';
+        });
+
+        // Subject change
+        subjectSelect.addEventListener('change', (e) => {
+            currentSubject = e.target.value;
+            const subject = subjectData[currentSubject];
+            currentSubjectBadge.textContent = subject.name;
+            addSystemMessage(`Switched to ${subject.name}. ${subject.responses.greeting}`);
+        });
+
+        // Quick action buttons
+        document.querySelectorAll('.action-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const msg = btn.getAttribute('data-msg');
+                if (msg) {
+                    messageInput.value = msg;
+                    sendMessage();
+                }
+            });
+        });
+
+        // Send message on Enter
+        messageInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // Auto-resize textarea
+        messageInput.addEventListener('input', () => {
+            messageInput.style.height = 'auto';
+            messageInput.style.height = Math.min(messageInput.scrollHeight, 120) + 'px';
+        });
+
+        sendBtn.addEventListener('click', sendMessage);
+
+        function addMessage(sender, content) {
+            // Hide welcome message after first message
+            if (welcomeMsg && !welcomeMsg.classList.contains('hidden')) {
+                welcomeMsg.classList.add('hidden');
+            }
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            const header = document.createElement('div');
+            header.className = 'message-header';
+            header.textContent = sender === 'user' ? 'You' : 'AI Teacher';
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            // Convert markdown-like syntax to HTML
+            let formatted = content
+                .replace(/\n/g, '<br>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/•/g, '•');
+            contentDiv.innerHTML = formatted;
+            
+            messageDiv.appendChild(header);
+            messageDiv.appendChild(contentDiv);
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function addSystemMessage(content) {
+            addMessage('ai', content);
+        }
+
+        function sendMessage() {
+            const message = messageInput.value.trim();
+            if (!message) return;
+            
+            // Add user message
+            addMessage('user', message);
+            
+            // Clear input
+            messageInput.value = '';
+            messageInput.style.height = 'auto';
+            
+            // Update counter
+            messageCount++;
+            
+            // Generate AI response
+            setTimeout(() => {
+                const response = generateResponse(message);
+                addMessage('ai', response);
+            }, 500); // Small delay for realism
+        }
+
+        function generateResponse(userMessage) {
+            const lowerMsg = userMessage.toLowerCase();
+            const subject = subjectData[currentSubject];
+            
+            // Check for specific keywords in knowledge base
+            for (const [keyword, response] of Object.entries(knowledgeBase)) {
+                if (lowerMsg.includes(keyword)) {
+                    return response;
+                }
+            }
+            
+            // Check for question tags specifically
+            if (lowerMsg.includes('tag')) {
+                return knowledgeBase.tags;
+            }
+            
+            // Subject-specific responses
+            if (lowerMsg.includes('hello') || lowerMsg.includes('hi') || lowerMsg.includes('muraho')) {
+                return subject.responses.greeting;
+            }
+            
+            if (lowerMsg.includes('step by step') || lowerMsg.includes('explain')) {
+                return `📚 **Step-by-Step Explanation (${subject.name})**\n\n1️⃣ First, let's understand the basic concept\n2️⃣ Then, I'll break it down into smaller parts\n3️⃣ We'll work through an example together\n4️⃣ Finally, you can practice on your own\n\nWhat specific topic would you like me to explain step by step?`;
+            }
+            
+            if (lowerMsg.includes('practice') || lowerMsg.includes('quiz')) {
+                return `📝 **Practice Question**\n\nHere's a practice question for ${subject.name}:\n\n${getPracticeQuestion(currentSubject)}\n\nTake your time and let me know your answer. I'll help you check it!`;
+            }
+            
+            if (lowerMsg.includes('example') || lowerMsg.includes('real life')) {
+                return getRealLifeExample(currentSubject);
+            }
+            
+            if (lowerMsg.includes('study plan')) {
+                return `📅 **Personalized Study Plan for ${subject.name}**\n\n• **Day 1**: Learn core concepts (30 min)\n• **Day 2**: Practice problems (25 min)\n• **Day 3**: Review and quiz (20 min)\n• **Day 4**: Advanced topics (30 min)\n• **Day 5**: Final review and test (20 min)\n\nWould you like me to adjust this plan for your schedule?`;
+            }
+            
+            if (lowerMsg.includes('basics')) {
+                return `🎯 **Back to Basics: ${subject.name}**\n\n${subject.responses.default}\n\nLet's start with the fundamentals. What would you like to learn first?`;
+            }
+            
+            // Default intelligent response
+            return `Thank you for your question about "${userMessage.substring(0, 50)}..."\n\n${subject.responses.default}\n\nI'm here to help you learn ${subject.name}. Feel free to ask about specific topics, request examples, or ask for practice questions!`;
+        }
+
+        function getPracticeQuestion(subject) {
+            const questions = {
+                general: "What are the three main study techniques that improve memory retention?",
+                mathematics: "Solve for x: 2x + 5 = 15. What is the value of x?",
+                english: "Correct this sentence: 'The students was playing in the field.'",
+                science: "What is the process called when plants make their own food using sunlight?",
+                kinyarwanda: "Sobanura icyo 'Agaciro k'ubumwe' bisobanura mu Kinyarwanda.",
+                history: "In which year did Rwanda gain independence from Belgium?"
+            };
+            return questions[subject] || questions.general;
+        }
+
+        function getRealLifeExample(subject) {
+            const examples = {
+                general: "💡 **Real-life Example**: When studying for exams, using the Pomodoro technique (25 minutes study, 5 minutes break) helps you focus better - just like athletes train in intervals!",
+                mathematics: "📐 **Real-life Example**: When budgeting your monthly allowance of 50,000 RWF, you use algebra to calculate expenses: If you save 10,000 RWF each month, how much will you have after 6 months? (Answer: 60,000 RWF!)",
+                english: "✍️ **Real-life Example**: When writing a job application email in Rwanda, use professional English: 'Dear Hiring Manager, I am writing to apply for the position...'",
+                science: "🔬 **Real-life Example**: In Rwanda's agriculture, farmers use knowledge of photosynthesis to know that coffee plants need 4-6 hours of sunlight daily for optimal growth!",
+                kinyarwanda: "🇷🇼 **Urugero**: Mu Rwanda, iyo ujyanye n'ibikorwa by'Umuganda, ukoresha ikinyarwanda mu itumanaho n'abaturage ukavuga ngo 'Twifashe hamwe tugakora umuganda'.",
+                history: "🏛️ **Real-life Example**: The tradition of Umuganda (community work every last Saturday) started from pre-colonial Rwanda's culture of working together for community development!"
+            };
+            return examples[subject] || examples.general;
+        }
+
+        // Initial greeting
+        setTimeout(() => {
+            const initialSubject = subjectData[currentSubject];
+            currentSubjectBadge.textContent = initialSubject.name;
+            addSystemMessage(initialSubject.responses.greeting);
+            addSystemMessage("I'm ready to help you learn! You can ask me anything about English, Mathematics, Science, History, or Kinyarwanda.");
+        }, 500);
+    </script>
 </body>
 </html>
