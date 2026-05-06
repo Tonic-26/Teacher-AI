@@ -1,907 +1,110 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teacher AI Rwanda 2026 – Smart Learning Platform</title>
-    <style>
-        :root {
-            --primary-blue: #0057B8;
-            --primary-green: #00A651;
-            --sunrise-yellow: #FFD700;
-            --deep-navy: #0A1628;
-            --glass-bg: rgba(255, 255, 255, 0.08);
-            --glass-border: rgba(255, 255, 255, 0.18);
-            --text-primary: #1a1a2e;
-            --text-secondary: #4a4a6a;
-            --bg-primary: #f0f4f8;
-            --bg-secondary: #e8ecf1;
-            --shadow: rgba(0, 87, 184, 0.15);
-            --accent-glow: rgba(0, 87, 184, 0.3);
-        }
-
-        [data-theme="dark"] {
-            --text-primary: #f0f4f8;
-            --text-secondary: #a0aec0;
-            --bg-primary: #0a0e1a;
-            --bg-secondary: #121a2d;
-            --glass-bg: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --shadow: rgba(0, 0, 0, 0.4);
-            --accent-glow: rgba(0, 166, 81, 0.3);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            min-height: 100vh;
-            overflow-x: hidden;
-            transition: background 0.3s ease, color 0.3s ease;
-        }
-
-        .gradient-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background: 
-                radial-gradient(ellipse at 20% 80%, rgba(0, 87, 184, 0.15) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 20%, rgba(0, 166, 81, 0.1) 0%, transparent 50%),
-                radial-gradient(ellipse at 40% 40%, rgba(255, 215, 0, 0.08) 0%, transparent 40%),
-                var(--bg-primary);
-            animation: gradientShift 20s ease-in-out infinite;
-        }
-
-        @keyframes gradientShift {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(-2%, -2%) scale(1.02); }
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            padding: 1rem 0;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .logo-icon {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, var(--primary-blue), var(--primary-green));
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            box-shadow: 0 4px 15px var(--shadow);
-        }
-
-        .logo-text h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--primary-blue), var(--primary-green));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .logo-text p {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            font-weight: 500;
-        }
-
-        .controls {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .theme-toggle {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 50px;
-            padding: 0.5rem 1rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.9rem;
-            color: var(--text-primary);
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-
-        .theme-toggle:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px var(--shadow);
-        }
-
-        .main-content {
-            flex: 1;
-            display: grid;
-            grid-template-columns: 300px 1fr;
-            gap: 2rem;
-            height: calc(100vh - 200px);
-        }
-
-        .sidebar {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-            box-shadow: 0 8px 32px var(--shadow);
-        }
-
-        .subject-selector {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .subject-selector label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .subject-dropdown {
-            background: var(--bg-secondary);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            padding: 0.875rem 1rem;
-            font-size: 1rem;
-            color: var(--text-primary);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            outline: none;
-        }
-
-        .subject-dropdown:focus {
-            border-color: var(--primary-blue);
-            box-shadow: 0 0 0 3px var(--accent-glow);
-        }
-
-        .quick-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
-
-        .quick-actions h3 {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 0.5rem;
-        }
-
-        .action-btn {
-            background: rgba(0, 87, 184, 0.1);
-            border: 1px solid rgba(0, 87, 184, 0.2);
-            border-radius: 10px;
-            padding: 0.75rem 1rem;
-            text-align: left;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: var(--text-primary);
-            font-size: 0.9rem;
-        }
-
-        .action-btn:hover {
-            background: rgba(0, 87, 184, 0.2);
-            transform: translateX(4px);
-        }
-
-        .chat-container {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            box-shadow: 0 8px 32px var(--shadow);
-        }
-
-        .chat-header {
-            padding: 1.25rem 1.5rem;
-            border-bottom: 1px solid var(--glass-border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .chat-status {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--primary-green);
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            scroll-behavior: smooth;
-        }
-
-        .message {
-            max-width: 80%;
-            padding: 1rem 1.25rem;
-            border-radius: 18px;
-            line-height: 1.6;
-            animation: messageSlide 0.3s ease;
-            position: relative;
-        }
-
-        @keyframes messageSlide {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .message.user {
-            align-self: flex-end;
-            background: linear-gradient(135deg, var(--primary-blue), #0066cc);
-            color: white;
-            border-bottom-right-radius: 4px;
-        }
-
-        .message.ai {
-            align-self: flex-start;
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            border-bottom-left-radius: 4px;
-            border: 1px solid var(--glass-border);
-        }
-
-        .message-header {
-            font-size: 0.75rem;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            opacity: 0.8;
-        }
-
-        .thinking {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--text-secondary);
-            font-style: italic;
-            padding: 1rem;
-        }
-
-        .thinking-dots {
-            display: flex;
-            gap: 4px;
-        }
-
-        .thinking-dots span {
-            width: 8px;
-            height: 8px;
-            background: var(--primary-blue);
-            border-radius: 50%;
-            animation: thinkingBounce 1.4s infinite ease-in-out both;
-        }
-
-        .thinking-dots span:nth-child(1) { animation-delay: -0.32s; }
-        .thinking-dots span:nth-child(2) { animation-delay: -0.16s; }
-
-        @keyframes thinkingBounce {
-            0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1); }
-        }
-
-        .chat-input-container {
-            padding: 1.25rem 1.5rem;
-            border-top: 1px solid var(--glass-border);
-            background: rgba(255, 255, 255, 0.03);
-        }
-
-        .input-wrapper {
-            display: flex;
-            gap: 0.75rem;
-            align-items: flex-end;
-        }
-
-        .chat-input {
-            flex: 1;
-            background: var(--bg-secondary);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            padding: 0.875rem 1.25rem;
-            font-size: 1rem;
-            color: var(--text-primary);
-            resize: none;
-            outline: none;
-            transition: all 0.3s ease;
-            font-family: inherit;
-            min-height: 50px;
-            max-height: 120px;
-        }
-
-        .chat-input:focus {
-            border-color: var(--primary-blue);
-            box-shadow: 0 0 0 3px var(--accent-glow);
-        }
-
-        .send-btn {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, var(--primary-blue), var(--primary-green));
-            border: none;
-            border-radius: 14px;
-            color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            flex-shrink: 0;
-        }
-
-        .send-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 15px var(--accent-glow);
-        }
-
-        .send-btn:active {
-            transform: scale(0.95);
-        }
-
-        .voice-btn {
-            width: 50px;
-            height: 50px;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 14px;
-            color: var(--text-primary);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            flex-shrink: 0;
-        }
-
-        .voice-btn:hover {
-            background: rgba(0, 166, 81, 0.1);
-            border-color: var(--primary-green);
-        }
-
-        .voice-btn.active {
-            background: rgba(0, 166, 81, 0.2);
-            border-color: var(--primary-green);
-            animation: voicePulse 1.5s infinite;
-        }
-
-        @keyframes voicePulse {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(0, 166, 81, 0.4); }
-            50% { box-shadow: 0 0 0 10px rgba(0, 166, 81, 0); }
-        }
-
-        .typing-cursor::after {
-            content: '|';
-            animation: blink 1s infinite;
-        }
-
-        @keyframes blink {
-            0%, 50% { opacity: 1; }
-            51%, 100% { opacity: 0; }
-        }
-
-        @media (max-width: 968px) {
-            .main-content {
-                grid-template-columns: 1fr;
-                height: auto;
-            }
-
-            .sidebar {
-                order: 2;
-            }
-
-            .chat-container {
-                order: 1;
-                height: 60vh;
-            }
-
-            .container {
-                padding: 1rem;
-            }
-
-            .message {
-                max-width: 90%;
-            }
-        }
-
-        .welcome-screen {
-            text-align: center;
-            padding: 3rem 2rem;
-            color: var(--text-secondary);
-        }
-
-        .welcome-screen h2 {
-            font-size: 1.75rem;
-            margin-bottom: 1rem;
-            color: var(--text-primary);
-        }
-
-        .welcome-screen p {
-            font-size: 1.1rem;
-            line-height: 1.6;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
-        .feature-pills {
-            display: flex;
-            gap: 0.75rem;
-            justify-content: center;
-            margin-top: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .pill {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            padding: 0.5rem 1rem;
-            border-radius: 50px;
-            font-size: 0.85rem;
-            color: var(--text-primary);
-        }
-
-        .hidden {
-            display: none !important;
-        }
-    </style>
+    <title>Teacher AI Rwanda 2026 - Smart Learning Platform</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="gradient-bg"></div>
+    <div class="particles-bg" id="particles"></div>
     
-    <div class="container">
-        <header>
-            <div class="logo">
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="logo-area">
                 <div class="logo-icon">🎓</div>
                 <div class="logo-text">
-                    <h1>Teacher AI Rwanda</h1>
-                    <p>Smart Learning Platform 2026</p>
+                    <h1>Teacher AI</h1>
+                    <p>Rwanda 2026</p>
                 </div>
             </div>
-            <div class="controls">
-                <button class="theme-toggle" onclick="toggleTheme()">
-                    <span id="theme-icon">🌙</span>
-                    <span id="theme-text">Dark</span>
-                </button>
+            
+            <div class="subject-selector">
+                <label>📚 Choose Subject</label>
+                <select id="subjectSelect">
+                    <option value="general">🌍 General Knowledge</option>
+                    <option value="mathematics">📐 Mathematics</option>
+                    <option value="english">✍️ English</option>
+                    <option value="science">🔬 Science</option>
+                    <option value="kinyarwanda">🇷🇼 Kinyarwanda</option>
+                    <option value="history">🏛️ History</option>
+                </select>
             </div>
-        </header>
-
-        <div class="main-content">
-            <aside class="sidebar">
-                <div class="subject-selector">
-                    <label>Select Subject</label>
-                    <select class="subject-dropdown" id="subjectSelect">
-                        <option value="general">📚 General Knowledge</option>
-                        <option value="mathematics">🔢 Mathematics</option>
-                        <option value="english">📝 English Language</option>
-                        <option value="science">🔬 Science</option>
-                        <option value="kinyarwanda">🇷🇼 Kinyarwanda</option>
-                        <option value="history">🏛️ History</option>
-                    </select>
+            
+            <div class="quick-actions">
+                <h3>⚡ Quick Actions</h3>
+                <button class="action-btn" data-msg="Explain this step by step">📖 Step by Step</button>
+                <button class="action-btn" data-msg="Give me practice questions">✏️ Practice Quiz</button>
+                <button class="action-btn" data-msg="Give me real-life examples">🌍 Real Examples</button>
+                <button class="action-btn" data-msg="Create a study plan for me">📅 Study Plan</button>
+                <button class="action-btn" data-msg="Help me understand the basics">🎯 Back to Basics</button>
+            </div>
+            
+            <div class="stats-panel">
+                <div class="stat">
+                    <span class="stat-value" id="messageCount">0</span>
+                    <span class="stat-label">Messages</span>
                 </div>
-
-                <div class="quick-actions">
-                    <h3>Quick Start</h3>
-                    <button class="action-btn" onclick="sendQuickMessage('Explain this topic step by step')">📖 Explain step by step</button>
-                    <button class="action-btn" onclick="sendQuickMessage('Give me practice questions')">✏️ Practice questions</button>
-                    <button class="action-btn" onclick="sendQuickMessage('Help me understand the basics')">🎯 Back to basics</button>
-                    <button class="action-btn" onclick="sendQuickMessage('Real-life examples please')">🌍 Real-life examples</button>
+                <div class="stat">
+                    <span class="stat-value" id="sessionTime">0</span>
+                    <span class="stat-label">Minutes</span>
                 </div>
-
-                <div class="quick-actions">
-                    <h3>Study Tools</h3>
-                    <button class="action-btn" onclick="sendQuickMessage('Create a study plan for me')">📅 Study plan</button>
-                    <button class="action-btn" onclick="sendQuickMessage('Quiz me on this subject')">🎮 Quiz mode</button>
+            </div>
+            
+            <button class="clear-chat-btn" id="clearChat">🗑️ Clear Chat</button>
+        </aside>
+        
+        <!-- Main Chat Area -->
+        <main class="chat-area">
+            <div class="chat-header">
+                <div class="status">
+                    <span class="online-dot"></span>
+                    <span>AI Teacher Online</span>
                 </div>
-            </aside>
-
-            <main class="chat-container">
-                <div class="chat-header">
-                    <div class="chat-status">
-                        <span class="status-dot"></span>
-                        <span>AI Teacher Online</span>
-                    </div>
-                    <span id="currentSubject" style="font-size: 0.85rem; color: var(--text-secondary);">General Knowledge</span>
-                </div>
-
-                <div class="chat-messages" id="chatMessages">
-                    <div class="welcome-screen" id="welcomeScreen">
-                        <h2>Muraho! Welcome to Your AI Teacher 👋</h2>
-                        <p>I'm here to help you learn and grow. Select a subject from the sidebar or ask me anything. I'll explain concepts clearly and guide you step by step.</p>
-                        <div class="feature-pills">
-                            <span class="pill">🎯 Personalized Learning</span>
-                            <span class="pill">🔊 Voice Enabled</span>
-                            <span class="pill">🇷🇼 Rwanda Curriculum</span>
-                            <span class="pill">⚡ Instant Help</span>
-                        </div>
+                <div class="subject-badge" id="currentSubjectBadge">General Knowledge</div>
+                <button class="theme-toggle" id="themeToggle">🌙</button>
+            </div>
+            
+            <div class="messages-container" id="messagesContainer">
+                <div class="welcome-message" id="welcomeMsg">
+                    <div class="welcome-icon">🇷🇼🤖</div>
+                    <h2>Muraho! Welcome to Teacher AI</h2>
+                    <p>Your intelligent learning companion for Rwanda's curriculum. I can help you with Mathematics, English, Science, Kinyarwanda, History, and more!</p>
+                    <div class="features">
+                        <span>🎯 Personalized Learning</span>
+                        <span>🔊 Voice Support</span>
+                        <span>📚 Rwanda Focused</span>
+                        <span>⚡ Real-time AI</span>
                     </div>
                 </div>
-
-                <div class="chat-input-container">
-                    <div class="input-wrapper">
-                        <button class="voice-btn" id="voiceBtn" onclick="toggleVoice()" title="Text to Speech">
-                            🔊
-                        </button>
-                        <textarea 
-                            class="chat-input" 
-                            id="chatInput" 
-                            placeholder="Ask your question here..." 
-                            rows="1"
-                            onkeydown="handleKeyDown(event)"
-                            oninput="autoResize(this)"
-                        ></textarea>
-                        <button class="send-btn" onclick="sendMessage()" title="Send">
-                            ➤
-                        </button>
-                    </div>
+            </div>
+            
+            <div class="input-area">
+                <div class="input-controls">
+                    <button class="voice-btn" id="voiceBtn" title="Voice Input">🎤</button>
+                    <button class="speak-btn" id="speakBtn" title="Text to Speech">🔊</button>
                 </div>
-            </main>
-        </div>
+                <div class="input-wrapper">
+                    <textarea 
+                        id="messageInput" 
+                        placeholder="Type your question here... (Press Enter to send)"
+                        rows="1"
+                    ></textarea>
+                    <button id="sendBtn" class="send-btn">Send ➤</button>
+                </div>
+                <div class="input-hint">✨ Shift + Enter for new line | Enter to send</div>
+            </div>
+        </main>
     </div>
-
-    <script>
-        const knowledgeBase = {
-            mathematics: {
-                greetings: ["Welcome to Mathematics! I'm excited to help you master numbers and patterns.", "Hello! Ready to explore the beautiful world of mathematics together?", "Muraho! Let's make math simple and fun for you."],
-                thinking: ["Analyzing the mathematical structure...", "Calculating the best approach...", "Breaking down the problem into steps..."],
-                prefixes: ["Here's how we solve this step by step:", "Let me guide you through this mathematical concept:", "I'll explain this clearly with examples:"],
-                topics: {
-                    algebra: "Algebra is like solving puzzles. We use letters to represent unknown numbers. For example, if x + 5 = 12, we find x by subtracting 5 from both sides: x = 7.",
-                    geometry: "Geometry studies shapes and spaces. A triangle has three sides and angles that add up to 180 degrees. Circles have radius (center to edge) and diameter (edge to edge through center).",
-                    arithmetic: "Arithmetic is the foundation: addition (+), subtraction (-), multiplication (×), and division (÷). Remember PEMDAS: Parentheses, Exponents, Multiplication/Division, Addition/Subtraction.",
-                    fractions: "Fractions represent parts of a whole. The top number (numerator) shows how many parts we have. The bottom (denominator) shows total parts. To add fractions, find a common denominator first."
-                }
-            },
-            english: {
-                greetings: ["Welcome to English! Let's improve your language skills together.", "Hello! I'm here to help you communicate with confidence.", "Muraho! English opens doors to the world. Let's learn!"],
-                thinking: ["Analyzing grammar and vocabulary...", "Structuring the explanation...", "Finding the best examples..."],
-                prefixes: ["Here's how to understand this:", "Let me break down the English concept:", "I'll explain with clear examples:"],
-                topics: {
-                    grammar: "Grammar is the structure of language. Subject comes first: 'The student (subject) reads (verb) books (object).' Adjectives describe nouns: 'The tall tree.' Adverbs describe verbs: 'She runs quickly.'",
-                    vocabulary: "Build vocabulary by reading daily. Context clues help understand new words. Root words: 'bio' means life (biology, biography). Prefixes like 'un-' mean not (happy → unhappy).",
-                    writing: "Good writing has a clear beginning, middle, and end. Start with a hook to grab attention. Use transition words: however, therefore, meanwhile. Always proofread!",
-                    speaking: "Speak clearly and confidently. Practice the TH sound by putting tongue between teeth. Intonation changes meaning: 'Really?' (surprise) vs 'Really.' (confirmation)."
-                }
-            },
-            science: {
-                greetings: ["Welcome to Science! Let's explore how the world works.", "Hello! Curiosity drives discovery. What shall we investigate?", "Muraho! Science is everywhere around us in Rwanda!"],
-                thinking: ["Examining scientific principles...", "Connecting concepts to real examples...", "Preparing experimental context..."],
-                prefixes: ["Here's the scientific explanation:", "Let me show you how this works in nature:", "Science reveals that:"],
-                topics: {
-                    biology: "Living things share characteristics: they grow, reproduce, respond to stimuli, and need energy. Cells are the basic units of life. Plants make food through photosynthesis using sunlight, water, and CO2.",
-                    physics: "Forces change motion. Newton's First Law: objects stay still or move steadily unless acted upon. Gravity pulls us toward Earth's center. Friction opposes motion—helpful for walking, challenging for sliding.",
-                    chemistry: "Matter exists as solid, liquid, or gas. Atoms are tiny building blocks. Water is H2O—two hydrogen atoms bonded to one oxygen. Chemical reactions rearrange atoms but don't create or destroy them.",
-                    environment: "Ecosystems depend on balance. Producers (plants) make food. Consumers (animals) eat. Decomposers recycle nutrients. Rwanda's reforestation helps restore this balance and fight climate change."
-                }
-            },
-            kinyarwanda: {
-                greetings: ["Mwaramutse! Turanezerewe kubana nawe.", "Muraho! Reba uko twiga ikinyarwanda neza.", "Amakuru! Ikinyarwanda ni ururimi rwiza."],
-                thinking: ["Gutegura igisubizo...", "Gusoza uburyo bwo kwigisha...", "Gushaka ibyitegerezo..."],
-                prefixes: ["Ngitangire nkurikije:", "Reba uko bisoboka:", "Nkimara gusobanura:"],
-                topics: {
-                    grammar: "Ikinyarwanda gifite inyuguti 24. Indanga (nouns) zigira uburinganire: umwana (umwe), abana (benshi). Icese (verbs) zihinduka: ndi (I am), uri (you are), ari (he/she is).",
-                    culture: "Imbonezamuryango (proverbs) zigira uburenganzira: 'Akabando k'inyana ntikamara ubusa'—small savings matter. Greetings matter: 'Amakuru?' asks for news, showing care for community.",
-                    poetry: "Ibyivugo (poetry) uses imagination and rhythm. 'Rwanda nziza' by Mutabaruka celebrates our hills. Traditional songs (intwatwa) pass history to new generations.",
-                    conversation: "Daily phrases: 'Mwaramutse' (good morning), 'Muraho' (hello), 'Amakuru' (how are you), 'Meza' (fine), 'Murakoze' (thank you), 'Nawe' (you too)."
-                }
-            },
-            history: {
-                greetings: ["Welcome to History! Understanding our past shapes our future.", "Hello! Let's explore Rwanda's rich heritage together.", "Muraho! Our history teaches us strength and unity."],
-                thinking: ["Researching historical context...", "Connecting past to present...", "Verifying historical facts..."],
-                prefixes: ["Historically, this period shows us:", "Looking back, we can see:", "Our history teaches us that:"],
-                topics: {
-                    rwanda: "Rwanda has been inhabited for thousands of years. The Kingdom of Rwanda united under mwami (king) by the 18th century. German colonization came in 1897, then Belgian rule. Independence arrived in 1962.",
-                    genocide: "The 1994 Genocide against the Tutsi was a tragedy that killed over one million. But from ashes rose strength. Today Rwanda leads in reconciliation, gender equality, and technological innovation.",
-                    unity: "Ndi Umunyarwanda (I am Rwandan) promotes unity. Gacaca courts achieved justice and healing. Our flag's colors mean: blue (peace), yellow (prosperity), green (hope), sun (light).",
-                    development: "Vision 2050 guides Rwanda to high-income status. Umuganda (community work) happens monthly. Rwanda was first country with female majority parliament. We host the African Union summit and global forums."
-                }
-            },
-            general: {
-                greetings: ["Hello! I'm your AI teacher. What would you like to learn today?", "Welcome! I can help with any subject. What's on your mind?", "Muraho! Ready to explore knowledge together?"],
-                thinking: ["Analyzing your question...", "Drawing from multiple subjects...", "Preparing comprehensive guidance..."],
-                prefixes: ["Here's what I can tell you:", "Let me explain this clearly:", "I'll help you understand:"],
-                topics: {
-                    study: "Effective studying: 1) Set specific goals 2) Use active recall (test yourself) 3) Space out sessions 4) Teach others 5) Sleep well—memory consolidates during rest. The Pomodoro technique: 25 minutes focus, 5 minutes break.",
-                    motivation: "Growth mindset: abilities develop through effort. Mistakes grow your brain. Set SMART goals: Specific, Measurable, Achievable, Relevant, Time-bound. Celebrate small wins!",
-                    exams: "Exam strategy: Read all questions first. Start with what you know. Manage time—don't spend too long on one question. Review answers if time permits. Stay calm: deep breaths reduce anxiety.",
-                    future: "Rwanda's youth are the future. Digital skills, critical thinking, and creativity matter. Consider STEM fields, entrepreneurship, or arts. Continuous learning opens doors globally while serving our nation."
-                }
-            }
-        };
-
-        let currentSubject = 'general';
-        let isTyping = false;
-        let voiceEnabled = false;
-        let synth = window.speechSynthesis;
-
-        const subjectNames = {
-            mathematics: 'Mathematics',
-            english: 'English',
-            science: 'Science',
-            kinyarwanda: 'Kinyarwanda',
-            history: 'History',
-            general: 'General Knowledge'
-        };
-
-        document.getElementById('subjectSelect').addEventListener('change', (e) => {
-            currentSubject = e.target.value;
-            document.getElementById('currentSubject').textContent = subjectNames[currentSubject];
-            addMessage('ai', `Switched to ${subjectNames[currentSubject]}. ${getRandomItem(knowledgeBase[currentSubject].greetings)}`);
-        });
-
-        function getRandomItem(arr) {
-            return arr[Math.floor(Math.random() * arr.length)];
-        }
-
-        function handleKeyDown(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
-        }
-
-        function autoResize(textarea) {
-            textarea.style.height = 'auto';
-            textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
-        }
-
-        function sendQuickMessage(text) {
-            document.getElementById('chatInput').value = text;
-            sendMessage();
-        }
-
-        function sendMessage() {
-            const input = document.getElementById('chatInput');
-            const message = input.value.trim();
-            
-            if (!message || isTyping) return;
-
-            document.getElementById('welcomeScreen')?.classList.add('hidden');
-            
-            addMessage('user', message);
-            input.value = '';
-            input.style.height = 'auto';
-            
-            showThinking();
-            
-            const delay = 1500 + Math.random() * 1000;
-            setTimeout(() => {
-                removeThinking();
-                const response = generateResponse(message);
-                typeMessage(response);
-            }, delay);
-        }
-
-        function addMessage(sender, text) {
-            const container = document.getElementById('chatMessages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${sender}`;
-            
-            const header = document.createElement('div');
-            header.className = 'message-header';
-            header.textContent = sender === 'user' ? 'You' : 'AI Teacher';
-            
-            const content = document.createElement('div');
-            content.textContent = text;
-            
-            messageDiv.appendChild(header);
-            messageDiv.appendChild(content);
-            container.appendChild(messageDiv);
-            container.scrollTop = container.scrollHeight;
-        }
-
-        function showThinking() {
-            isTyping = true;
-            const container = document.getElementById('chatMessages');
-            const thinkingDiv = document.createElement('div');
-            thinkingDiv.className = 'thinking';
-            thinkingDiv.id = 'thinkingIndicator';
-            
-            const text = document.createElement('span');
-            text.textContent = getRandomItem(knowledgeBase[currentSubject].thinking);
-            
-            const dots = document.createElement('div');
-            dots.className = 'thinking-dots';
-            dots.innerHTML = '<span></span><span></span><span></span>';
-            
-            thinkingDiv.appendChild(text);
-            thinkingDiv.appendChild(dots);
-            container.appendChild(thinkingDiv);
-            container.scrollTop = container.scrollHeight;
-        }
-
-        function removeThinking() {
-            const thinking = document.getElementById('thinkingIndicator');
-            if (thinking) thinking.remove();
-        }
-
-        function generateResponse(input) {
-            const lower = input.toLowerCase();
-            const subject = knowledgeBase[currentSubject];
-            let response = getRandomItem(subject.prefixes) + '\n\n';
-            
-            const topicKeys = Object.keys(subject.topics);
-            let matched = false;
-            
-            for (const key of topicKeys) {
-                if (lower.includes(key)) {
-                    response += subject.topics[key];
-                    matched = true;
-                    break;
-                }
-            }
-            
-            if (!matched) {
-                if (lower.includes('hello') || lower.includes('hi') || lower.includes('muraho')) {
-                    response = getRandomItem(subject.greetings);
-                } else if (lower.includes('step by step') || lower.includes('explain')) {
-                    response += subject.topics[topicKeys[0]] + '\n\nStep 1: Understand the basics\nStep 2: Identify what you need to find\nStep 3: Apply the right method\nStep 4: Check your answer\nStep 5: Practice with similar problems';
-                } else if (lower.includes('practice') || lower.includes('question') || lower.includes('quiz')) {
-                    response += `Here's a practice question for you:\n\n${generatePracticeQuestion()}\n\nTake your time, and let me know when you'd like to check your answer!`;
-                } else if (lower.includes('example') || lower.includes('real')) {
-                    response += subject.topics[topicKeys[Math.floor(Math.random() * topicKeys.length)]] + '\n\nCan you think of a similar example from your own experience? This helps cement your understanding.';
-                } else if (lower.includes('study') || lower.includes('plan')) {
-                    response += knowledgeBase.general.topics.study;
-                } else {
-                    response += subject.topics[topicKeys[Math.floor(Math.random() * topicKeys.length)]];
-                }
-            }
-            
-            if (Math.random() > 0.7) {
-                response += '\n\nDoes this make sense? Would you like me to explain any part differently, or shall we move to a practice question?';
-            }
-            
-            return response;
-        }
-
-        function generatePracticeQuestion() {
-            const questions = {
-                mathematics: "If a farmer has 120 trees and plants 15 more each month, how many trees will they have after 8 months?",
-                english: "Identify the adverb in this sentence: 'The students worked diligently on their assignments.'",
-                science: "What gas do plants absorb from the atmosphere during photosynthesis, and what gas do they release?",
-                kinyarwanda: "Sobanura ikigereranyo: 'Akabando k'inyana ntikamara ubusa.' Ni iki uyu muburo ushaka kutwigisha?",
-                history: "In what year did Rwanda gain independence, and from which colonial power?",
-                general: "What are the three main states of matter, and can you give an example of each?"
-            };
-            return questions[currentSubject] || questions.general;
-        }
-
-        function typeMessage(text) {
-            isTyping = true;
-            const container = document.getElementById('chatMessages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message ai';
-            
-            const header = document.createElement('div');
-            header.className = 'message-header';
-            header.textContent = 'AI Teacher';
-            
-            const content = document.createElement('div');
-            content.className = 'typing-cursor';
-            
-            messageDiv.appendChild(header);
-            messageDiv.appendChild(content);
-            container.appendChild(messageDiv);
-            container.scrollTop = container.scrollHeight;
-            
-            let index = 0;
-            const speed = 20;
-            
-            function type() {
-                if (index < text.length) {
-                    content.textContent += text.charAt(index);
-                    index++;
-                    container.scrollTop = container.scrollHeight;
-                    setTimeout(type, speed);
-                } else {
-                    content.classList.remove('typing-cursor');
-                    isTyping = false;
-                    if (voiceEnabled) speakText(text);
-                }
-            }
-            
-            type();
-        }
-
-        function toggleVoice() {
-            voiceEnabled = !voiceEnabled;
-            const btn = document.getElementById('voiceBtn');
-            if (voiceEnabled) {
-                btn.classList.add('active');
-                btn.innerHTML = '🔊';
-            } else {
-                btn.classList.remove('active');
-                btn.innerHTML = '🔇';
-                synth.cancel();
-            }
-        }
-
-        function speakText(text) {
-            if (!synth) return;
-            synth.cancel();
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.rate = 0.9;
-            utterance.pitch = 1;
-            utterance.lang = currentSubject === 'kinyarwanda' ? 'rw-RW' : 'en-US';
-            synth.speak(utterance);
-        }
-
-        function toggleTheme() {
-            const html = document.documentElement;
-            const current = html.getAttribute('data-theme');
-            const next = current === 'dark' ? 'light' : 'dark';
-            html.setAttribute('data-theme', next);
-            
-            document.getElementById('theme-icon').textContent = next === 'dark' ? '☀️' : '🌙';
-            document.getElementById('theme-text').textContent = next === 'dark' ? 'Light' : 'Dark';
-        }
-
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            toggleTheme();
-        }
-    </script>
+    
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <p>AI is thinking...</p>
+    </div>
+    
+    <script src="script.js"></script>
 </body>
 </html>
